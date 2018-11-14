@@ -15,8 +15,9 @@ def inputprocess(debug):
     if debug is True:
         sys.stdout.write("splitin is: ")
         print(splitin)
-    # find and replace environment variables
-    processed = []
+    # find and replace environment variables, and gather file input and output if requested
+    processed = [[]]
+    cur = 0
     fin = ""
     finflag = False
     fout = ""
@@ -28,13 +29,16 @@ def inputprocess(debug):
                 i = os.environ.get(i)
                 if i is None: # case that the env variable isn't set
                     i = ""
-                processed.append(i)
-            elif str.startswith(i, '<'):
+                processed[cur].append(i)
+            elif i == '<':
                 finflag = True
-            elif str.startswith(i, '>'):
+            elif i == '>':
                 foutflag = True
+            elif i == '|':
+                processed.append([])
+                cur += 1
             else:
-                processed.append(i)
+                processed[cur].append(i)
         elif finflag is True:
             fin = i
             finflag = False
@@ -45,11 +49,12 @@ def inputprocess(debug):
     if debug is True:
         sys.stdout.write("processed is: ")
         print(processed)
+        sys.stdout.write("processed __len__: ")
+        print(processed.__len__())
         sys.stdout.write("fin is: ")
         print(fin)
         sys.stdout.write("fout is: ")
         print(fout)
-    # find and replace e
     # deal with filein and out
     finfile = None
     foutfile = None
