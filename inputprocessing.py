@@ -17,18 +17,48 @@ def inputprocess(debug):
         print(splitin)
     # find and replace environment variables
     processed = []
+    fin = ""
+    finflag = False
+    fout = ""
+    foutflag = False
     for i in splitin:
-        if str.startswith(i, "$"):
-            i = str.replace(i, "$", "")
-            i = os.environ.get(i)
-            if i is None:
-                i = ""
-            processed.append(i)
-        else:
-            processed.append(i)
+        if finflag is False and foutflag is False:
+            if str.startswith(i, "$"):
+                i = str.replace(i, "$", "")
+                i = os.environ.get(i)
+                if i is None: # case that the env variable isn't set
+                    i = ""
+                processed.append(i)
+            elif str.startswith(i, '<'):
+                finflag = True
+            elif str.startswith(i, '>'):
+                foutflag = True
+            else:
+                processed.append(i)
+        elif finflag is True:
+            fin = i
+            finflag = False
+        elif foutflag is True:
+            fout = i
+            foutflag = False
     # debug help
     if debug is True:
         sys.stdout.write("processed is: ")
         print(processed)
+        sys.stdout.write("fin is: ")
+        print(fin)
+        sys.stdout.write("fout is: ")
+        print(fout)
     # find and replace e
-    return processed
+    # deal with filein and out
+    finfile = None
+    foutfile = None
+    try:
+        if fin != "":
+            finfile = open(fin, "r")
+        if fout != "":
+            foutfile = open(fout, "w")
+    except IOError:
+        print("Failed to open file for input/output direction")
+        return "", None, None  # to abort command
+    return processed, finfile, foutfile

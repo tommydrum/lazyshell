@@ -1,3 +1,4 @@
+from os import dup2
 from os import fork
 from os import execvp
 from os import waitpid
@@ -18,10 +19,14 @@ else:
 
 # program loop
 while True:
-    splitin = inputprocess(debug)
+    splitin, finfile, foutfile = inputprocess(debug)
     # builtin commands (including no command)
     try:
         bi[splitin[0]](splitin[1:])
+        if finfile is not None:
+            finfile.close()
+        if foutfile is not None:
+            foutfile.close()
         continue
     except KeyError:
         nop()
@@ -29,12 +34,19 @@ while True:
     pid = fork()
     if pid == 0:
         try:
+            if finfile is not None:
+                dup2(finfile.fileno(), 0)
+            if foutfile is not None:
+                dup2(foutfile.fileno(), 1)
             execvp(splitin[0], splitin)
         except OSError:
             print("Command not found.")
             exit()
     else:
+        if finfile is not None:
+            finfile.close()
+        if foutfile is not None:
+            foutfile.close()
         waitpid(pid, 0)
 
-# TODO: file redirection
 # TODO: pipes
