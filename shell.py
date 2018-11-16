@@ -93,7 +93,6 @@ while True:
     for l in pidlist:
         if l is not None: # essentially skips builtin commands..
             waitpid(l, 0) # wait for all processes in chain at once.
-# TODO: PS2 Prompt
+# TODO: Better PS2 Prompt
 # TODO: Tab features
 # TODO: Colors
-# TODO: Quote support

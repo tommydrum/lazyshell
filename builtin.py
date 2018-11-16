@@ -1,6 +1,4 @@
 import os
-
-
 # Module functions
 
 
@@ -37,6 +35,14 @@ def setenv(args):
         return
     os.environ[envvar] = setvar
 
+def unset(args):
+    try:
+        envvar = args[0]
+    except IndexError:
+        print("Not enough arguments")
+        print("syntax: unset key")
+        return
+    os.environ.__delitem__(envvar)
 
 # helpers
 def fakeexit(args):
@@ -57,6 +63,7 @@ def initbuiltin():
         "cd": chdir,
         "chdir": chdir,
         "set": setenv,
+        "unset": unset,
         '': nop
     }
     return functions

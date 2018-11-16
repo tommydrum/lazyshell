@@ -1,16 +1,40 @@
 import sys
 import os
-
+import prompt
+import askpy
 
 def inputprocess(debug):
     # prompt
-    sys.stdout.write("$ ")
+    ps0 = os.environ.get("PS0")
+    if ps0 is None:
+        ps0 = "$"
+    sys.stdout.write(ps0 + " ")
     instr = sys.stdin.readline()
     # input cleansing
     instr = instr.replace("\n", '')
     instr = instr.replace("\t", ' ')
     instr = instr.lstrip(' ')
-    splitin = instr.split(' ')
+
+    # Splitting string into basic lists, with quote support
+    splitin = [""] # instr.split(' ')
+    count = 0
+    quoteflag = False
+    for letter in instr:
+        if quoteflag is True:
+            if letter == '\"':
+                quoteflag = False
+                splitin.append("")
+                count += 1
+            else:
+                splitin[count] += letter
+        else:
+            if letter == '\"':
+                quoteflag = True
+            elif letter == ' ':
+                splitin.append("")
+                count += 1
+            else:
+                splitin[count] += letter
     # debug help
     if debug is True:
         sys.stdout.write("splitin is: ")
@@ -23,6 +47,8 @@ def inputprocess(debug):
     fout = ""
     foutflag = False
     for i in splitin:
+        if i == "":
+            continue
         if finflag is False and foutflag is False:
             if str.startswith(i, "$"):
                 i = str.replace(i, "$", "")
