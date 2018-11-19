@@ -47,7 +47,10 @@ def unset(args):
         print("Not enough arguments")
         print("syntax: unset key")
         return
-    os.environ.__delitem__(envvar)
+    try:
+        os.environ.__delitem__(envvar)
+    except KeyError:
+        print("Key not found.")
 
 # helpers
 def fakeexit(args):

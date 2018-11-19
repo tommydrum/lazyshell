@@ -3,16 +3,19 @@
 
 import sys
 import os
-
+from builtin import nop
 
 def inputprocess(debug):
     # prompt
     ps0 = os.environ.get("PS0")
-    if ps0 is None:
+    if ps0 is None: # default prompt
         ps0 = " %p"
-    if ps0.__contains__("%p"):
+    if ps0.__contains__("%p"): # path support
         ps0 = ps0.replace("%p", os.getcwd())
-        ps0 = ps0.replace(os.environ["HOME"], "~")
+        try:
+            ps0 = ps0.replace(os.environ["HOME"], "~")
+        except KeyError:
+           nop() 
     sys.stdout.write(ps0 + " ")
     instr = sys.stdin.readline()
     # input cleansing
