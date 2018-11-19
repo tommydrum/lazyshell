@@ -1,13 +1,18 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import sys
 import os
-import prompt
-import askpy
+
 
 def inputprocess(debug):
     # prompt
     ps0 = os.environ.get("PS0")
     if ps0 is None:
-        ps0 = "$"
+        ps0 = " %p"
+    if ps0.__contains__("%p"):
+        ps0 = ps0.replace("%p", os.getcwd())
+        ps0 = ps0.replace(os.environ["HOME"], "~")
     sys.stdout.write(ps0 + " ")
     instr = sys.stdin.readline()
     # input cleansing

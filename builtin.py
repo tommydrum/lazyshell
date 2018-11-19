@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import os
 # Module functions
 
@@ -9,9 +12,11 @@ def curdir(args):
 
 def chdir(args):
     try:
-        os.chdir(args[0])
+        os.chdir(args[1])
     except OSError:
         print("Failed")
+    except IndexError:
+        os.chdir(os.environ["HOME"])
 
 
 def listdir(args):
@@ -27,8 +32,8 @@ def listdir(args):
 # other shell features
 def setenv(args):
     try:
-        envvar = args[0]
-        setvar = args[1]
+        envvar = args[1]
+        setvar = args[2]
     except IndexError:
         print("Not enough arguments")
         print("syntax: set key value")
@@ -37,7 +42,7 @@ def setenv(args):
 
 def unset(args):
     try:
-        envvar = args[0]
+        envvar = args[1]
     except IndexError:
         print("Not enough arguments")
         print("syntax: unset key")

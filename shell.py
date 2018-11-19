@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from os import dup2
 from os import fork
 from os import execvp
@@ -31,10 +34,12 @@ def clean(finfile, foutfile):
 def processcmd(cmd, finfile, foutfile):
     # builtin commands (including no command)
     try:
-        bi[cmd[0]](cmd[1:])
+        bi[cmd[0]](cmd[0:])
         clean(finfile, foutfile)
         return None
     except KeyError:
+        nop()
+    except IndexError:
         nop()
     # Process a real command
     pid = fork()
@@ -48,6 +53,8 @@ def processcmd(cmd, finfile, foutfile):
         except OSError:
             print("Command not found.")
             exit()
+        except IndexError:
+            nop()
     else:
         clean(finfile, foutfile)
         return pid
