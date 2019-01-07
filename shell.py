@@ -1,18 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from os import dup2
-from os import fork
-from os import execvp
-from os import waitpid
-from os import pipe
-from os import close
+from os import dup2, fork, execvp, waitpid, pipe, close
 from sys import argv
 from builtin import initbuiltin
-from builtin import nop
 from inputprocessing import inputprocess
 # init
 bi = initbuiltin()
+# allow user customization of the builtin commands
+try:
+    import lshrc
+    bi = lshrc.builtin(bi)
+except ImportError:
+    pass
+
 
 # debug flag
 if argv.__contains__("-v"):
@@ -38,9 +39,9 @@ def processcmd(cmd, finfile, foutfile):
         clean(finfile, foutfile)
         return None
     except KeyError:
-        nop()
+        pass
     except IndexError:
-        nop()
+        pass
     # Process a real command
     pid = fork()
     if pid == 0:
@@ -54,7 +55,7 @@ def processcmd(cmd, finfile, foutfile):
             print("Command not found.")
             exit()
         except IndexError:
-            nop()
+            pass
     else:
         clean(finfile, foutfile)
         return pid

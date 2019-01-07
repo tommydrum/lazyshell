@@ -3,7 +3,6 @@
 
 import sys
 import os
-from builtin import nop
 
 def inputprocess(debug):
     # prompt
@@ -15,7 +14,7 @@ def inputprocess(debug):
         try:
             ps0 = ps0.replace(os.environ["HOME"], "~")
         except KeyError:
-           nop() 
+           pass 
     sys.stdout.write(ps0 + " ")
     instr = sys.stdin.readline()
     # input cleansing

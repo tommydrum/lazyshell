@@ -56,9 +56,8 @@ def unset(args):
 def fakeexit(args):
     exit()
 
-
-nop = lambda *a, **k: None
-
+def nop(args = None):
+    pass
 
 # init builtin functions, NEEDS TO STAY AT END
 def initbuiltin():
@@ -72,6 +71,6 @@ def initbuiltin():
         "chdir": chdir,
         "set": setenv,
         "unset": unset,
-        '': nop
+        '': nop()
     }
     return functions
